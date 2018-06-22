@@ -1,20 +1,18 @@
 <template>
-  <div>
-    <div class="col-large push-top">
-      <h1>{{thread.title}}</h1>
+  <div class="col-full push-top">
+    <h1>{{thread.title}}</h1>
 
-      <p>
-        By <a href="#" class="link-unstyled">Robin</a>, <AppDate :timestamp="thread.publishedAt"/>.
-        <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">3 replies by 3 contributors</span>
-      </p>
+    <p>
+      By <a href="#" class="link-unstyled">Robin</a>, <AppDate :timestamp="thread.publishedAt"/>.
+      <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">3 replies by 3 contributors</span>
+    </p>
 
-      <PostList :posts="posts" />
+    <PostList :posts="posts" />
 
-      <PostEditor
-        :threadId="id"  
-      />
+    <PostEditor
+      :threadId="id"  
+    />
 
-    </div>
   </div>
 </template>
 
@@ -27,18 +25,19 @@
       PostList,
       PostEditor
     },
+
     props: {
       id: {
         required: true,
         type: String
       }
     },
-    data () {
-      return {
-        thread: this.$store.state.threads[this.$route.params.id]
-      }
-    },
+
     computed: {
+      thread () {
+        return this.$store.state.threads[this.$route.params.id]
+      },
+
       posts () {
         const postIds = Object.values(this.thread.posts)
 

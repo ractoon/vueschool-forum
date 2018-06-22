@@ -22,7 +22,7 @@
 
           <div class="profile-header">
               <span class="text-lead">
-                  {{user.name}}'s recent activity
+                  {{user.username}}'s recent activity
               </span>
               <a href="#">See only started threads?</a>
           </div>
