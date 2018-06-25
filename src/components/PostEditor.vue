@@ -13,7 +13,8 @@
       </div>
 
       <div class="form-actions">
-        <button class="btn-blue">Submit Post</button>
+        <button v-if="isUpdate" @click.prevent="cancel" class="btn btn-ghost">Cancel</button>
+        <button class="btn-blue">{{isUpdate ? 'Update' : 'Submit Post'}}</button>
       </div>
     </form>
   </div>
@@ -23,16 +24,55 @@
   export default {
     props: {
       threadId: {
-        required: true
+        required: false
+      },
+
+      post: {
+        type: Object,
+        validator: obj => {
+          const keyIsValid = typeof obj['.key'] === 'string'
+          const textIsValid = typeof obj.text === 'string'
+
+          const valid = keyIsValid && textIsValid
+
+          if (!keyIsValid) {
+            console.error('The post object must include a `.key` attribute.')
+          }
+
+          if (!textIsValid) {
+            console.error('The post object must include a `text` attribute.')
+          }
+
+          return valid
+        }
       }
     },
+
     data () {
       return {
-        text: ''
+        text: this.post ? this.post.text : ''
       }
     },
+
+    computed: {
+      isUpdate () {
+        return !!this.post
+      }
+    },
+
     methods: {
       save () {
+        this.persist()
+          .then(post => {
+            this.$emit('save', {post})
+          })
+      },
+
+      cancel () {
+        this.$emit('cancel')
+      },
+
+      create () {
         const post = {
           text: this.text,
           threadId: this.threadId
@@ -40,8 +80,20 @@
 
         this.text = ''
 
-        this.$emit('save', {post})
-        this.$store.dispatch('createPost', post)
+        return this.$store.dispatch('createPost', post)
+      },
+
+      update () {
+        const payload = {
+          id: this.post['.key'],
+          text: this.text
+        }
+
+        return this.$store.dispatch('updatePost', payload)
+      },
+
+      persist () {
+        return this.isUpdate ? this.update() : this.create()
       }
     }
   }
