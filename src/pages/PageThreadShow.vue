@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div v-if="thread && user" class="col-full push-top">
     <h1>
       {{thread.title}}
 
@@ -25,8 +25,10 @@
 </template>
 
 <script>
+  import firebase from 'firebase'
   import PostList from '@/components/PostList'
   import PostEditor from '@/components/PostEditor'
+  import {countObjectProperties} from '@/utils'
 
   export default {
     components: {
@@ -62,14 +64,23 @@
       },
 
       contributorsCount () {
-        const replies = Object.keys(this.thread.posts)
-          .filter(postId => postId !== this.thread.firstPostId)
-          .map(postId => this.$store.state.posts[postId])
-
-        const userIds = replies.map(post => post.userId)
-
-        return userIds.filter((item, index) => index === userIds.indexOf(item)).length
+        return countObjectProperties(this.thread.contributors)
       }
+    },
+
+    created () {
+      this.$store.dispatch('fetchThread', {id: this.id})
+        .then(thread => {
+          this.$store.dispatch('fetchUser', {id: thread.userId})
+
+          Object.keys(thread.posts).forEach(postId => {
+            // fetch post
+            this.$store.dispatch('fetchPost', {id: postId})
+              .then(post => {
+                this.$store.dispatch('fetchUser', {id: post.userId})
+              })
+          })
+        })
     }
   }
 </script>
