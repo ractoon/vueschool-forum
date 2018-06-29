@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import sourceData from '@/data'
 import PostEditor from './PostEditor'
 
 export default {
@@ -59,7 +58,7 @@ export default {
 
   computed: {
     user () {
-      return sourceData.users[this.post.userId]
+      return this.$store.state.users[this.post.userId]
     },
 
     userPostsCount () {

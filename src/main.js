@@ -4,8 +4,8 @@ import Vue from 'vue'
 import firebase from 'firebase'
 import App from './App'
 import router from './router'
-import AppDate from '@/components/AppDate'
 import store from '@/store'
+import AppDate from '@/components/AppDate'
 
 Vue.component('AppDate', AppDate)
 
@@ -29,5 +29,8 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  beforeCreate () {
+    store.dispatch('fetchUser', {id: store.state.authId})
+  }
 })
