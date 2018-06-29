@@ -31,6 +31,7 @@ export default {
       type: Object
     }
   },
+
   computed: {
     threadsCount () {
       return countObjectProperties(this.forum.threads)
