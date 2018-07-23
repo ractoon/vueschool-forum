@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="col-3 push-top">
     <div class="profile-card">
         <p class="text-center">
             <img :src="user.avatar" alt="" class="avatar-xlarge">

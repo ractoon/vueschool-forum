@@ -57,12 +57,17 @@ export default {
   methods: {
     register () {
       this.$store.dispatch('registerUserWithEmailAndPassword', this.form)
-        .then(() => this.$router.push('/'))
+        .then(() => this.successRedirect())
     },
 
     registerWithGoogle () {
       this.$store.dispatch('signInWithGoogle', this.form)
-        .then(() => this.$router.push('/'))
+        .then(() => this.successRedirect())
+    },
+
+    successRedirect () {
+      const redirectTo = this.$route.query.redirectTo || {name: 'Home'}
+      this.$router.push(redirectTo)
     }
   },
 
