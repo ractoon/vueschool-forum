@@ -13,16 +13,16 @@ import auth from './modules/auth'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    categories: {},
-    forums: {},
-    posts: {},
-    users: {},
-    authId: null,
-    unsubscribeAuthObserver: null
-  },
-
+  state: {},
   getters,
   actions,
-  mutations
+  mutations,
+  modules: {
+    categories,
+    forums,
+    threads,
+    posts,
+    users,
+    auth
+  }
 })

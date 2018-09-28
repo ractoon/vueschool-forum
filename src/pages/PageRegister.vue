@@ -56,12 +56,12 @@ export default {
 
   methods: {
     register () {
-      this.$store.dispatch('registerUserWithEmailAndPassword', this.form)
+      this.$store.dispatch('auth/registerUserWithEmailAndPassword', this.form)
         .then(() => this.successRedirect())
     },
 
     registerWithGoogle () {
-      this.$store.dispatch('signInWithGoogle', this.form)
+      this.$store.dispatch('auth/signInWithGoogle', this.form)
         .then(() => this.successRedirect())
     },
 
