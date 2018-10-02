@@ -7,11 +7,18 @@
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input v-model="form.email" id="email" type="text" class="form-input">
+            <input v-model="form.email" @blur="$v.form.email.$touch()" id="email" type="text" class="form-input">
+            <template v-if="$v.form.email.$error">
+              <span v-if="!$v.form.email.required" class="form-error">This field is required</span>
+              <span v-else-if="!$v.form.email.email" class="form-error">This is not a valid email address</span>
+            </template>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input v-model="form.password" id="password" type="password" class="form-input">
+            <input v-model="form.password" @blur="$v.form.password.$touch()" id="password" type="password" class="form-input">
+            <template v-if="$v.form.password.$error">
+              <span v-if="!$v.form.password.required" class="form-error">This field is required</span>
+            </template>
         </div>
 
         <div class="push-top">
@@ -31,12 +38,26 @@
 </template>
 
 <script>
+import {required, email} from 'vuelidate/lib/validators'
+
 export default {
   data () {
     return {
       form: {
         email: null,
         password: null
+      }
+    }
+  },
+
+  validations: {
+    form: {
+      email: {
+        required,
+        email,
+      },
+      password: {
+        required
       }
     }
   },

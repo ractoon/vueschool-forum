@@ -14,9 +14,10 @@
 
         <div class="form-group">
             <label for="username">Username</label>
-            <input v-model="form.username" @blur="$v.form.username.$touch()" id="username" type="text" class="form-input">
+            <input v-model.lazy="form.username" @blur="$v.form.username.$touch()" id="username" type="text" class="form-input">
             <template v-if="$v.form.username.$error">
               <span v-if="!$v.form.username.required" class="form-error">This field is required</span>
+              <span v-else-if="!$v.form.username.unique" class="form-error">Sorry! This username is taken</span>
             </template>
         </div>
 
@@ -26,6 +27,7 @@
             <template v-if="$v.form.email.$error">
               <span v-if="!$v.form.email.required" class="form-error">This field is required</span>
               <span v-else-if="!$v.form.email.email" class="form-error">This is not a valid email address</span>
+              <span v-else-if="!$v.form.email.unique" class="form-error">Sorry! This email is taken</span>
             </template>
         </div>
 
@@ -34,13 +36,18 @@
             <input v-model="form.password" @blur="$v.form.password.$touch()" id="password" type="password" class="form-input">
             <template v-if="$v.form.password.$error">
               <span v-if="!$v.form.password.required" class="form-error">This field is required</span>
-              <span v-if="!$v.form.password.minLength" class="form-error">The password must be at least 6 characters long</span>
+              <span v-else-if="!$v.form.password.minLength" class="form-error">The password must be at least 6 characters long</span>
             </template>
         </div>
 
         <div class="form-group">
             <label for="avatar">Avatar</label>
-            <input v-model="form.avatar" id="avatar" type="text" class="form-input">
+            <input v-model.lazy="form.avatar" id="avatar" type="text" class="form-input">
+            <template v-if="$v.form.avatar.$error">
+              <span v-if="!$v.form.avatar.url" class="form-error">The supplied URL is invalid</span>
+              <span v-else-if="!$v.form.avatar.supportedImageFile" class="form-error">This file type is not supported by our system</span>
+              <span v-else-if="!$v.form.avatar.responseOk" class="form-error">Image is not accessible at specified URL</span>
+            </template>
         </div>
 
         <div class="form-actions">
@@ -55,7 +62,9 @@
 </template>
 
 <script>
-import {required, email, minLength} from 'vuelidate/lib/validators'
+import {required, email, minLength, url} from 'vuelidate/lib/validators'
+import {uniqueUsername, uniqueEmail, supportedImageFile, responseOk} from '@/utils/validators'
+
 export default {
   data () {
     return {
@@ -75,15 +84,22 @@ export default {
         required
       },
       username: {
-        required
+        required,
+        unique: uniqueUsername
       },
       email: {
         required,
-        email
+        email,
+        unique: uniqueEmail
       },
       password: {
         required,
         minLength: minLength(6)
+      },
+      avatar: {
+        url,
+        supportedImageFile,
+        responseOk
       }
     }
   },
