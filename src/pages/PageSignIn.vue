@@ -54,7 +54,7 @@ export default {
     form: {
       email: {
         required,
-        email,
+        email
       },
       password: {
         required
